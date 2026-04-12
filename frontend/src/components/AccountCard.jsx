@@ -1,87 +1,109 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from './ui/badge';
-import { Card } from './ui/card';
-import { Mail, Shield } from 'lucide-react';
+import { Mail, Shield, Sparkles } from 'lucide-react';
 
 const AccountCard = ({ account }) => {
   return (
-    <Link to={`/account/${account.id}`}>
-      <Card className="bg-[#161616] border-gray-800/50 overflow-hidden group cursor-pointer transition-all duration-300 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.02]">
-        {/* Image */}
-        <div className="relative overflow-hidden aspect-video">
-          <img
-            src={account.image}
-            alt={account.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          
-          {/* Price Badge */}
-          <div className="absolute top-3 right-3 flex gap-2">
-            <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-2 py-1 text-xs font-bold">
-              DEMO
-            </Badge>
-          </div>
-          <div className="absolute bottom-3 right-3">
-            <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 px-3 py-1 text-sm font-bold">
-              €0.00
-            </Badge>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-4 space-y-3">
-          {/* Title */}
-          <h3 className="text-white font-semibold text-lg line-clamp-2 group-hover:text-blue-400 transition-colors duration-200">
-            {account.title}
-          </h3>
-
-          {/* Stats */}
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <span className="font-medium text-blue-400">{account.skinsCount}</span>
-            <span>Skins</span>
-            {account.vBucks > 0 && (
-              <>
-                <span className="text-gray-600">•</span>
-                <span className="font-medium text-purple-400">{account.vBucks}</span>
-                <span>V-Bucks</span>
-              </>
-            )}
-          </div>
-
-          {/* Rare Skins */}
-          {account.rarity && account.rarity.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {account.rarity.slice(0, 2).map((skin, index) => (
-                <Badge
-                  key={index}
-                  variant="outline"
-                  className="text-xs border-yellow-500/50 text-yellow-400 bg-yellow-500/10"
-                >
-                  {skin}
+    <Link to={`/account/${account.id}`} className="block group">
+      <div className="relative">
+        {/* Glow Effect */}
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500" />
+        
+        {/* Card */}
+        <div className="relative bg-zinc-900/90 backdrop-blur-sm border border-zinc-800 rounded-2xl overflow-hidden group-hover:border-zinc-700 transition-all duration-300">
+          {/* Image Container */}
+          <div className="relative aspect-video overflow-hidden">
+            <img
+              src={account.image}
+              alt={account.title}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+            
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/20 to-transparent" />
+            
+            {/* Top Badges */}
+            <div className="absolute top-3 left-3 flex gap-2">
+              {account.rarity && account.rarity.length > 0 && (
+                <Badge className="bg-yellow-500/90 backdrop-blur-sm text-black border-0 font-semibold text-xs px-2 py-1">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  OG
                 </Badge>
-              ))}
+              )}
             </div>
-          )}
+            
+            {/* Price Badge - Bottom Right */}
+            <div className="absolute bottom-3 right-3">
+              <div className="bg-black/80 backdrop-blur-md rounded-xl px-4 py-2 border border-zinc-700">
+                <div className="text-xs text-zinc-400 mb-0.5">Prezzo Demo</div>
+                <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                  €0.00
+                </div>
+              </div>
+            </div>
+          </div>
 
-          {/* Features */}
-          <div className="flex items-center gap-3 pt-2 border-t border-gray-800/50">
-            {account.fullAccess && (
-              <div className="flex items-center gap-1 text-xs text-green-400">
-                <Shield className="h-3 w-3" />
-                <span>Full Access</span>
+          {/* Content */}
+          <div className="p-5 space-y-4">
+            {/* Title */}
+            <h3 className="text-white font-bold text-lg line-clamp-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300">
+              {account.title}
+            </h3>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-zinc-800/50 rounded-lg p-2.5 text-center border border-zinc-700/50">
+                <div className="text-indigo-400 font-bold text-lg">{account.skinsCount}</div>
+                <div className="text-zinc-500 text-xs">Skins</div>
+              </div>
+              <div className="bg-zinc-800/50 rounded-lg p-2.5 text-center border border-zinc-700/50">
+                <div className="text-purple-400 font-bold text-lg">{account.vBucks}</div>
+                <div className="text-zinc-500 text-xs">V-Bucks</div>
+              </div>
+              <div className="bg-zinc-800/50 rounded-lg p-2.5 text-center border border-zinc-700/50">
+                <div className="text-pink-400 font-bold text-lg">{account.accountLevel}</div>
+                <div className="text-zinc-500 text-xs">Level</div>
+              </div>
+            </div>
+
+            {/* Rare Skins Tags */}
+            {account.rarity && account.rarity.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {account.rarity.slice(0, 2).map((skin, index) => (
+                  <Badge
+                    key={index}
+                    className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 text-yellow-300 border border-yellow-500/30 text-xs px-2 py-0.5"
+                  >
+                    {skin}
+                  </Badge>
+                ))}
               </div>
             )}
-            {account.mailChangeable && (
-              <div className="flex items-center gap-1 text-xs text-blue-400">
-                <Mail className="h-3 w-3" />
-                <span>Mail OK</span>
-              </div>
-            )}
+
+            {/* Features */}
+            <div className="flex items-center gap-2 pt-2 border-t border-zinc-800">
+              {account.fullAccess && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 border border-green-500/30 rounded-lg">
+                  <Shield className="h-3.5 w-3.5 text-green-400" />
+                  <span className="text-green-400 text-xs font-medium">FA</span>
+                </div>
+              )}
+              {account.mailChangeable && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                  <Mail className="h-3.5 w-3.5 text-blue-400" />
+                  <span className="text-blue-400 text-xs font-medium">FNA</span>
+                </div>
+              )}
+              {account.vBucks > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                  <span className="text-purple-400 text-xs font-medium">VBUCKS</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </Card>
+      </div>
     </Link>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ArrowRight, Star } from 'lucide-react';
+import { Search, TrendingUp, Shield, Zap, ChevronDown, Filter } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import AccountCard from '../components/AccountCard';
@@ -20,18 +20,25 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [filteredAccounts, setFilteredAccounts] = useState(fortniteAccounts);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   useEffect(() => {
     let result = [...fortniteAccounts];
 
-    // Search filter
     if (searchQuery) {
       result = result.filter((account) =>
         account.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Skins range filter
     if (filters.skinsRange) {
       result = result.filter(
         (account) =>
@@ -40,26 +47,22 @@ const Home = () => {
       );
     }
 
-    // Rarity filter
     if (filters.rarity.length > 0) {
       result = result.filter((account) =>
         filters.rarity.some((r) => account.rarity.includes(r))
       );
     }
 
-    // Platform filter
     if (filters.platforms.length > 0) {
       result = result.filter((account) =>
         filters.platforms.some((p) => account.platform.includes(p))
       );
     }
 
-    // Full access filter
     if (filters.fullAccess) {
       result = result.filter((account) => account.fullAccess);
     }
 
-    // Sort
     switch (sortBy) {
       case 'price-asc':
         result.sort((a, b) => a.price - b.price);
@@ -97,132 +100,105 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        {/* Animated Background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-950/20 via-purple-950/20 to-[#0a0a0a]" />
-          <div className="stars-container">
-            {[...Array(50)].map((_, i) => (
-              <div
-                key={i}
-                className="star"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${2 + Math.random() * 3}s`,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
-          {/* Premium Badge */}
-          <div className="flex justify-center mb-8 animate-fade-in">
-            <Badge className="bg-emerald-500/10 border-emerald-500/30 text-emerald-400 px-4 py-2 text-sm font-medium">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-pulse" />
-              Premium Service Online
-            </Badge>
-          </div>
-
-          {/* Main Title */}
-          <div className="text-center space-y-6 animate-slide-up">
-            <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
-              Premium
-              <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-                Gaming Marketplace
-              </span>
-            </h1>
-            <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-              Ottieni accesso istantaneo ad account premium Fortnite, V-Bucks, e
-              <br className="hidden md:block" />
-              oggetti esclusivi. Pagamenti sicuri, consegna immediata, supporto 24/7.
-            </p>
-          </div>
-
-          {/* Search Bar */}
-          <div className="mt-12 max-w-3xl mx-auto animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <div className="relative group">
-              <Input
-                type="text"
-                placeholder="Cerca account, skins, o oggetti..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-16 bg-gray-900/50 backdrop-blur-xl border-gray-700/50 rounded-2xl pl-6 pr-14 text-white placeholder-gray-500 text-lg focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-300"
-              />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center hover:scale-110 transition-transform duration-200">
-                <Search className="h-5 w-5 text-white" />
-              </button>
-            </div>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 h-12 rounded-xl text-base font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300"
-            >
-              Esplora Tutti i Prodotti
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-gray-700 bg-gray-900/50 backdrop-blur-xl hover:bg-gray-800/70 text-white px-8 h-12 rounded-xl text-base font-semibold transition-all duration-300"
-            >
-              Unisciti a Discord
-            </Button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-black relative overflow-hidden">
+      {/* Animated Gradient Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute w-[800px] h-[800px] rounded-full opacity-20 blur-3xl"
+          style={{
+            background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)',
+            left: `${mousePosition.x - 400}px`,
+            top: `${mousePosition.y - 400}px`,
+            transition: 'left 0.3s ease-out, top 0.3s ease-out',
+          }}
+        />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl" />
       </div>
 
-      {/* Stats Section */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Hero Section */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20">
+        {/* Main Title with 3D Effect */}
+        <div className="text-center mb-12 space-y-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 backdrop-blur-sm mb-6">
+            <Zap className="h-4 w-4 text-indigo-400" />
+            <span className="text-indigo-300 text-sm font-medium">Il Marketplace #1 per Fortnite</span>
+          </div>
+          
+          <h1 className="text-6xl md:text-8xl font-black tracking-tight">
+            <span className="block text-white drop-shadow-2xl" style={{
+              textShadow: '0 0 80px rgba(99, 102, 241, 0.5), 0 0 40px rgba(168, 85, 247, 0.3)'
+            }}>
+              elite<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">HUB</span>
+            </span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto font-light leading-relaxed">
+            Account Fortnite premium verificati. Acquista in sicurezza,
+            <br className="hidden md:block" />
+            ricevi istantaneamente. Supporto dedicato 24/7.
+          </p>
+        </div>
+
+        {/* Advanced Search Bar */}
+        <div className="max-w-3xl mx-auto mb-16">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-25 group-hover:opacity-40 transition duration-300" />
+            <div className="relative flex items-center bg-zinc-900/90 backdrop-blur-xl rounded-2xl border border-zinc-800 overflow-hidden">
+              <Input
+                type="text"
+                placeholder="Cerca Renegade Raider, Black Knight, account OG..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 bg-transparent border-0 h-16 px-6 text-white placeholder-zinc-500 focus:ring-0 text-lg"
+              />
+              <Button 
+                size="lg"
+                className="m-2 h-12 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl"
+              >
+                <Search className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
           {[
-            { value: '5,447+', label: 'Happy Customers' },
-            { value: '13,408+', label: 'Orders Completed' },
-            { value: '57+', label: 'Products Available' },
-            { value: '4.6', label: 'Average Rating', icon: Star },
+            { icon: Shield, label: 'Account Verificati', value: '100%', color: 'from-green-500 to-emerald-500' },
+            { icon: Zap, label: 'Consegna Immediata', value: '<5min', color: 'from-indigo-500 to-blue-500' },
+            { icon: TrendingUp, label: 'Vendite Totali', value: '13K+', color: 'from-purple-500 to-pink-500' },
+            { icon: Shield, label: 'Rating Medio', value: '4.9★', color: 'from-yellow-500 to-orange-500' },
           ].map((stat, index) => (
             <div
               key={index}
-              className="bg-gradient-to-br from-gray-900/80 to-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 text-center hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 group"
+              className="relative group cursor-pointer"
             >
-              <div className="text-3xl md:text-4xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-                {stat.value}
-                {stat.icon && <stat.icon className="h-6 w-6 text-yellow-400 fill-yellow-400" />}
+              <div className="absolute -inset-0.5 bg-gradient-to-r opacity-0 group-hover:opacity-100 rounded-xl blur transition duration-300" style={{
+                backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))`
+              }} />
+              <div className="relative bg-zinc-900/90 backdrop-blur-sm border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition-all duration-300">
+                <div className={`inline-flex p-3 rounded-lg bg-gradient-to-br ${stat.color} mb-3`}>
+                  <stat.icon className="h-5 w-5 text-white" />
+                </div>
+                <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-sm text-zinc-400">{stat.label}</div>
               </div>
-              <div className="text-gray-400 text-sm md:text-base">{stat.label}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Featured Products Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      {/* Products Section */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         {/* Section Header */}
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <p className="text-cyan-400 text-sm font-semibold tracking-wider uppercase mb-2">
-              I NOSTRI BESTSELLER
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">Prodotti in Evidenza</h2>
+            <h2 className="text-4xl font-bold text-white mb-2">Account Disponibili</h2>
+            <p className="text-zinc-400">Scegli tra i migliori account Fortnite sul mercato</p>
           </div>
-          <Link
-            to="/products"
-            className="hidden md:flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200 group"
-          >
-            <span>Vedi Tutti i Prodotti</span>
-            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
-          </Link>
         </div>
 
-        {/* Filters and Sort */}
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters - Desktop */}
           <div className="hidden lg:block lg:w-80 flex-shrink-0">
@@ -234,7 +210,7 @@ const Home = () => {
             />
           </div>
 
-          {/* Mobile Filter Button */}
+          {/* Mobile Filter */}
           {showMobileFilters && (
             <FilterSidebar
               filters={filters}
@@ -247,28 +223,35 @@ const Home = () => {
 
           {/* Products Grid */}
           <div className="flex-1">
-            {/* Sort and Filter Bar */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
+            {/* Sort Bar */}
+            <div className="flex items-center justify-between mb-6 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-xl p-4">
+              <div className="flex items-center gap-4">
                 <Button
                   onClick={() => setShowMobileFilters(true)}
-                  className="lg:hidden bg-gray-900/50 border border-gray-700/50 text-white"
+                  className="lg:hidden bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700"
                 >
+                  <Filter className="h-4 w-4 mr-2" />
                   Filtri
                 </Button>
-                <p className="text-gray-400 text-sm">
-                  <span className="font-semibold text-white">{filteredAccounts.length}</span> account trovati
-                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-zinc-400 text-sm">Trovati</span>
+                  <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 font-semibold">
+                    {filteredAccounts.length}
+                  </Badge>
+                  <span className="text-zinc-400 text-sm">account</span>
+                </div>
               </div>
+              
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[200px] bg-gray-900/50 border-gray-700/50 text-white">
-                  <SelectValue placeholder="Ordina per" />
+                <SelectTrigger className="w-[200px] bg-zinc-800 border-zinc-700 text-white">
+                  <ChevronDown className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Ordina" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-900 border-gray-700">
+                <SelectContent className="bg-zinc-900 border-zinc-700">
                   <SelectItem value="date-desc">Più Recenti</SelectItem>
                   <SelectItem value="date-asc">Meno Recenti</SelectItem>
-                  <SelectItem value="price-asc">Prezzo: Crescente</SelectItem>
-                  <SelectItem value="price-desc">Prezzo: Decrescente</SelectItem>
+                  <SelectItem value="price-asc">Prezzo Basso</SelectItem>
+                  <SelectItem value="price-desc">Prezzo Alto</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -278,26 +261,53 @@ const Home = () => {
               {filteredAccounts.map((account, index) => (
                 <div
                   key={account.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${index * 0.05}s` }}
+                  className="opacity-0 animate-fade-in"
+                  style={{ 
+                    animationDelay: `${index * 0.1}s`,
+                    animationFillMode: 'forwards'
+                  }}
                 >
                   <AccountCard account={account} />
                 </div>
               ))}
             </div>
 
-            {/* No Results */}
             {filteredAccounts.length === 0 && (
               <div className="text-center py-20">
-                <p className="text-gray-400 text-lg">Nessun account trovato con questi filtri.</p>
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-zinc-900 border border-zinc-800 mb-6">
+                  <Search className="h-10 w-10 text-zinc-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-2">Nessun account trovato</h3>
+                <p className="text-zinc-400 mb-6">Prova a modificare i filtri di ricerca</p>
                 <Button
                   onClick={clearFilters}
-                  className="mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
                 >
                   Cancella Filtri
                 </Button>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Trust Section */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+        <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 backdrop-blur-sm border border-indigo-500/20 rounded-3xl p-12 text-center">
+          <h3 className="text-3xl font-bold text-white mb-4">Perché scegliere eliteHUB?</h3>
+          <p className="text-zinc-400 text-lg max-w-2xl mx-auto mb-8">
+            Ogni account è verificato manualmente dal nostro team. Garanzia di rimborso completo se qualcosa non va come previsto.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Badge className="px-6 py-3 bg-green-500/20 text-green-300 border-green-500/30 text-base">
+              ✓ Pagamenti Sicuri
+            </Badge>
+            <Badge className="px-6 py-3 bg-blue-500/20 text-blue-300 border-blue-500/30 text-base">
+              ✓ Consegna Istantanea
+            </Badge>
+            <Badge className="px-6 py-3 bg-purple-500/20 text-purple-300 border-purple-500/30 text-base">
+              ✓ Supporto 24/7
+            </Badge>
           </div>
         </div>
       </div>
