@@ -1,10 +1,32 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ShoppingBag, User, Menu, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingCart, User, Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const { user, logout } = useAuth();
+  const { cart } = useCart();
+  const navigate = useNavigate();
+
+  const handleProfileClick = () => {
+    if (user) {
+      navigate('/profile');
+    } else {
+      navigate('/login');
+    }
+  };
+
+  const handleCartClick = () => {
+    if (user) {
+      navigate('/cart');
+    } else {
+      navigate('/login');
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-zinc-800/50">
@@ -48,23 +70,59 @@ const Navbar = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* Cart */}
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
+              onClick={handleCartClick}
+              className="text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl relative"
             >
-              <ShoppingBag className="h-5 w-5" />
+              <ShoppingCart className="h-5 w-5" />
+              {cart.items.length > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-indigo-600 text-white text-xs">
+                  {cart.items.length}
+                </Badge>
+              )}
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
-            >
-              <User className="h-5 w-5" />
-            </Button>
-            <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold px-6">
-              Vendi Account
-            </Button>
+
+            {/* Profile/Login */}
+            {user ? (
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleProfileClick}
+                  className="text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+                <div className="hidden lg:block">
+                  <div className="text-sm text-white font-medium">{user.name}</div>
+                  <button 
+                    onClick={() => { logout(); navigate('/'); }}
+                    className="text-xs text-zinc-400 hover:text-white"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button 
+                  onClick={() => navigate('/login')}
+                  variant="ghost"
+                  className="text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
+                >
+                  Accedi
+                </Button>
+                <Button 
+                  onClick={() => navigate('/register')}
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold px-6"
+                >
+                  Registrati
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -102,10 +160,42 @@ const Navbar = () => {
               >
                 Supporto
               </a>
-              <div className="px-4 pt-4 border-t border-zinc-800">
-                <Button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold">
-                  Vendi Account
-                </Button>
+              
+              <div className="px-4 pt-4 border-t border-zinc-800 space-y-2">
+                {user ? (
+                  <>
+                    <Button 
+                      onClick={() => { navigate('/profile'); setMobileMenuOpen(false); }}
+                      className="w-full bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl justify-start"
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      {user.name}
+                    </Button>
+                    <Button 
+                      onClick={() => { navigate('/cart'); setMobileMenuOpen(false); }}
+                      className="w-full bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl justify-start"
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Carrello ({cart.items.length})
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      onClick={() => { navigate('/login'); setMobileMenuOpen(false); }}
+                      variant="outline"
+                      className="w-full border-zinc-700 text-white rounded-xl"
+                    >
+                      Accedi
+                    </Button>
+                    <Button 
+                      onClick={() => { navigate('/register'); setMobileMenuOpen(false); }}
+                      className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold"
+                    >
+                      Registrati
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

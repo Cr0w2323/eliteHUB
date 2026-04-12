@@ -101,3 +101,135 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Test completo del flusso eliteHUB dopo il fix del bug di autenticazione/sessione"
+
+frontend:
+  - task: "User Registration"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Register.jsx, /app/frontend/src/contexts/AuthContext.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Registration flow tested successfully. User can register with valid email, gets redirected to home page, and is automatically logged in. Error handling improved to properly display FastAPI validation errors as toast messages instead of crashing React app."
+
+  - task: "Add Account to Cart"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/AccountCard.jsx, /app/frontend/src/contexts/CartContext.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Add to cart functionality working correctly. Cart badge updates to show item count. Success toast displayed when item added."
+
+  - task: "Cart Page Access (Auth Session Persistence)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Cart.jsx, /app/frontend/src/contexts/AuthContext.jsx"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "CRITICAL TEST PASSED: Logged-in users can access cart page without being redirected to login. Auth session persists correctly. The authLoading state properly prevents premature redirects."
+
+  - task: "Cart Page Refresh (Session Persistence)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Cart.jsx, /app/frontend/src/contexts/AuthContext.jsx"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "CRITICAL TEST PASSED: User remains logged in after refreshing cart page. Cart content persists. Token stored in localStorage is properly retrieved on page load."
+
+  - task: "Checkout Flow"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Cart.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Checkout flow working correctly. User can select payment method, complete checkout, and is redirected to profile page. Order is created successfully."
+
+  - task: "Order History Display"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Profile.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Order history displays correctly on profile page. Order details visible including purchased account information and credentials section."
+
+  - task: "Password Toggle (Show/Hide)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Profile.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Password toggle functionality working correctly. Eye icon toggles between showing and hiding account password in order history."
+
+  - task: "Profile Page Refresh (Session Persistence)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Profile.jsx, /app/frontend/src/contexts/AuthContext.jsx"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "CRITICAL TEST PASSED: User remains logged in after refreshing profile page. Order history persists and remains visible."
+
+  - task: "Error Handling for FastAPI Validation Errors"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/contexts/AuthContext.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL BUG FOUND: FastAPI validation errors (422 responses) were being rendered directly as React children, causing 'Objects are not valid as a React child' error and red screen crash."
+        - working: true
+          agent: "testing"
+          comment: "BUG FIXED: Updated error handling in AuthContext login() and register() functions to properly extract error messages from FastAPI validation error objects. Now displays user-friendly error messages in toast notifications instead of crashing."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+  last_test_date: "2026-04-12"
+
+test_plan:
+  current_focus:
+    - "All critical auth/session tests completed"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+      message: "Complete flow testing completed successfully. All 8 test scenarios passed. Critical bug in error handling was identified and fixed. The auth session persistence bug has been verified as fixed - users can now access cart and profile pages without being redirected to login, and sessions persist across page refreshes."
