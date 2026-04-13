@@ -216,20 +216,83 @@ frontend:
           agent: "testing"
           comment: "BUG FIXED: Updated error handling in AuthContext login() and register() functions to properly extract error messages from FastAPI validation error objects. Now displays user-friendly error messages in toast notifications instead of crashing."
 
+  - task: "Homepage - Real Prices Display"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Home.jsx, /app/frontend/src/components/AccountCard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Homepage displays REAL prices from database. Found prices: €39.00, €55.00, €57.00, €75.00. NO €0.00 prices found. Database integration working correctly."
+
+  - task: "Homepage - Stats Hidden in Account Cards"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/AccountCard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Account cards correctly hide stats grid (Skins, V-Bucks, Level). Cards show only: Title, Rarity Badge (OG), FA/FNA badges, and Price. This is the correct behavior as requested."
+
+  - task: "Homepage - Generic Gaming Images"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/AccountCard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: All account images are generic gaming photos from Unsplash. NO Fortnite-specific screenshots found. Images are appropriate and generic as requested."
+
+  - task: "Homepage - Price Variety"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Home.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PASS: Multiple different price points visible. Found 4 unique prices: €39.00, €55.00, €57.00, €75.00. Good variety of pricing across accounts."
+
+  - task: "Account Detail Page - Display Stats and Real Prices"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/pages/AccountDetail.jsx"
+    stuck_count: 1
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ CRITICAL BUG: Account Detail page is completely broken. Shows 'Account non trovato' (Account not found) error. ROOT CAUSE: AccountDetail.jsx uses mock data from fortniteAccounts array with IDs ('1', '2', '3') but homepage uses database IDs ('acc_001', 'acc_002'). ID mismatch causes lookup failure. SOLUTION NEEDED: Rewrite AccountDetail.jsx to fetch account data from API endpoint GET /api/accounts/{id} instead of using mock data. Detail page MUST show stats (Skins, V-Bucks, Level) and real prices."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: true
-  last_test_date: "2026-04-12"
+  last_test_date: "2026-04-13"
 
 test_plan:
   current_focus:
-    - "All critical auth/session tests completed"
-  stuck_tasks: []
-  test_all: true
+    - "Account Detail Page - Display Stats and Real Prices"
+  stuck_tasks:
+    - "Account Detail Page - Display Stats and Real Prices"
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
     - agent: "testing"
       message: "Complete flow testing completed successfully. All 8 test scenarios passed. Critical bug in error handling was identified and fixed. The auth session persistence bug has been verified as fixed - users can now access cart and profile pages without being redirected to login, and sessions persist across page refreshes."
+    - agent: "testing"
+      message: "NEW TEST FOCUS: Tested homepage pricing, stats visibility, and detail page functionality. CRITICAL BUG FOUND: Account Detail page is completely broken - shows 'Account non trovato' error because it uses mock data with mismatched IDs instead of fetching from API. Homepage works perfectly with real prices (€39, €55, €57, €75), hidden stats in cards, and generic images. Detail page needs complete rewrite to fetch from API."

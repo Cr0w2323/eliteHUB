@@ -5,9 +5,11 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import AccountCard from '../components/AccountCard';
 import FilterSidebar from '../components/FilterSidebar';
-import { fortniteAccounts } from '../mock/accountsData';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 const Home = () => {
   const [filters, setFilters] = useState({
@@ -19,8 +21,26 @@ const Home = () => {
   const [sortBy, setSortBy] = useState('date-desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [filteredAccounts, setFilteredAccounts] = useState(fortniteAccounts);
+  const [allAccounts, setAllAccounts] = useState([]);
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [loading, setLoading] = useState(true);
+
+  // Carica account dal database
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/accounts`);
+        setAllAccounts(response.data);
+        setFilteredAccounts(response.data);
+      } catch (error) {
+        console.error('Error loading accounts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAccounts();
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -31,7 +51,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    let result = [...fortniteAccounts];
+    let result = [...allAccounts];
 
     if (searchQuery) {
       result = result.filter((account) =>
@@ -81,7 +101,7 @@ const Home = () => {
     }
 
     setFilteredAccounts(result);
-  }, [filters, sortBy, searchQuery]);
+  }, [filters, sortBy, searchQuery, allAccounts]);
 
   const handleFilterChange = (filterType, value) => {
     setFilters((prev) => ({
@@ -257,20 +277,26 @@ const Home = () => {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredAccounts.map((account, index) => (
-                <div
-                  key={account.id}
-                  className="opacity-0 animate-fade-in"
-                  style={{ 
-                    animationDelay: `${index * 0.1}s`,
-                    animationFillMode: 'forwards'
-                  }}
-                >
-                  <AccountCard account={account} />
-                </div>
-              ))}
-            </div>
+            {loading ? (
+              <div className="text-center py-20">
+                <div className="text-white text-xl">Caricamento account...</div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredAccounts.map((account, index) => (
+                  <div
+                    key={account.id}
+                    className="opacity-0 animate-fade-in"
+                    style={{ 
+                      animationDelay: `${index * 0.1}s`,
+                      animationFillMode: 'forwards'
+                    }}
+                  >
+                    <AccountCard account={account} />
+                  </div>
+                ))}
+              </div>
+            )}
 
             {filteredAccounts.length === 0 && (
               <div className="text-center py-20">

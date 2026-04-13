@@ -67,9 +67,8 @@ const AccountCard = ({ account }) => {
             {/* Price Badge - Bottom Right */}
             <div className="absolute bottom-3 right-3">
               <div className="bg-black/80 backdrop-blur-md rounded-xl px-4 py-2 border border-zinc-700">
-                <div className="text-xs text-zinc-400 mb-0.5">Prezzo Demo</div>
                 <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                  €0.00
+                  €{account.price.toFixed(2)}
                 </div>
               </div>
             </div>
@@ -85,26 +84,10 @@ const AccountCard = ({ account }) => {
             </h3>
           </Link>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-zinc-800/50 rounded-lg p-2.5 text-center border border-zinc-700/50">
-              <div className="text-indigo-400 font-bold text-lg">{account.skinsCount}</div>
-              <div className="text-zinc-500 text-xs">Skins</div>
-            </div>
-            <div className="bg-zinc-800/50 rounded-lg p-2.5 text-center border border-zinc-700/50">
-              <div className="text-purple-400 font-bold text-lg">{account.vBucks}</div>
-              <div className="text-zinc-500 text-xs">V-Bucks</div>
-            </div>
-            <div className="bg-zinc-800/50 rounded-lg p-2.5 text-center border border-zinc-700/50">
-              <div className="text-pink-400 font-bold text-lg">{account.accountLevel}</div>
-              <div className="text-zinc-500 text-xs">Level</div>
-            </div>
-          </div>
-
           {/* Rare Skins Tags */}
           {account.rarity && account.rarity.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {account.rarity.slice(0, 2).map((skin, index) => (
+              {account.rarity.slice(0, 3).map((skin, index) => (
                 <Badge
                   key={index}
                   className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 text-yellow-300 border border-yellow-500/30 text-xs px-2 py-0.5"
@@ -127,11 +110,6 @@ const AccountCard = ({ account }) => {
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 border border-blue-500/30 rounded-lg">
                 <Mail className="h-3.5 w-3.5 text-blue-400" />
                 <span className="text-blue-400 text-xs font-medium">FNA</span>
-              </div>
-            )}
-            {account.vBucks > 0 && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                <span className="text-purple-400 text-xs font-medium">VBUCKS</span>
               </div>
             )}
           </div>
