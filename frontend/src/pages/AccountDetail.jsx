@@ -162,18 +162,8 @@ const AccountDetail = () => {
               </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="flex flex-wrap gap-3">
-              <Badge className="bg-blue-500/10 border-blue-500/30 text-blue-400 px-4 py-2">
-                {account.skinsCount} Skins
-              </Badge>
-              <Badge className="bg-purple-500/10 border-purple-500/30 text-purple-400 px-4 py-2">
-                {account.vBucks} V-Bucks
-              </Badge>
-              <Badge className="bg-yellow-500/10 border-yellow-500/30 text-yellow-400 px-4 py-2">
-                Livello {account.accountLevel}
-              </Badge>
-            </div>
+            {/* Quick Stats - Hidden per user request, info nel titolo */}
+            {/* Account info is displayed in the title as per fncrib format */}
 
             {/* Rare Skins */}
             {account.rarity && account.rarity.length > 0 && (
@@ -200,27 +190,13 @@ const AccountDetail = () => {
               <p className="text-gray-400 leading-relaxed">{account.description}</p>
             </div>
 
-            {/* Specifications */}
+            {/* Specifications - Info disponibile nel titolo come da formato fncrib */}
             <Card className="bg-[#161616] border-gray-800/50 p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Specifiche Account</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">V-Bucks Attuali</span>
-                  <span className="text-white font-semibold">{account.vBucks}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Livello Account</span>
-                  <span className="text-white font-semibold">{account.accountLevel}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Emote Rare</span>
-                  <span className="text-white font-semibold">{account.rareEmotes}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Totale Skins</span>
-                  <span className="text-white font-semibold">{account.skinsCount}</span>
-                </div>
-              </div>
+              <h3 className="text-lg font-semibold text-white mb-4">Dettagli Account</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Tutte le informazioni su skins, V-Bucks e livello sono indicate nel titolo dell'account. 
+                Dopo l'acquisto riceverai le credenziali complete per accedere.
+              </p>
             </Card>
 
             {/* Features */}
@@ -308,6 +284,56 @@ const AccountDetail = () => {
                   <span className="text-gray-300 text-sm">Supporto 24/7 via Discord o Email</span>
                 </div>
               </div>
+            </Card>
+
+            {/* Post-Purchase Instructions */}
+            <Card className="bg-gradient-to-br from-purple-950/30 to-pink-950/30 border-purple-500/30 p-6">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Zap className="h-5 w-5 text-purple-400" />
+                Cosa Succede Dopo l'Acquisto?
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-600 text-white text-xs font-bold flex-shrink-0">
+                    1
+                  </div>
+                  <div>
+                    <p className="text-white font-medium text-sm mb-1">Pagamento Completato</p>
+                    <p className="text-gray-400 text-sm">Completa il pagamento tramite PayPal in modo sicuro e veloce</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-600 text-white text-xs font-bold flex-shrink-0">
+                    2
+                  </div>
+                  <div>
+                    <p className="text-white font-medium text-sm mb-1">Accedi alle Credenziali</p>
+                    <p className="text-gray-400 text-sm">Vai alla tua pagina <span className="text-purple-400 font-medium">Profilo</span> e trova l'ordine nella sezione "Storico Ordini"</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-600 text-white text-xs font-bold flex-shrink-0">
+                    3
+                  </div>
+                  <div>
+                    <p className="text-white font-medium text-sm mb-1">Visualizza Email e Password</p>
+                    <p className="text-gray-400 text-sm">Clicca su "Mostra Password" per rivelare le credenziali del tuo account Fortnite</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-600 text-white text-xs font-bold flex-shrink-0">
+                    4
+                  </div>
+                  <div>
+                    <p className="text-white font-medium text-sm mb-1">Accedi e Gioca!</p>
+                    <p className="text-gray-400 text-sm">Usa le credenziali per accedere al tuo nuovo account Fortnite e inizia a giocare</p>
+                  </div>
+                </div>
+              </div>
+              <Separator className="my-4 bg-purple-800/30" />
+              <p className="text-gray-400 text-xs text-center">
+                💡 <span className="text-purple-400">Suggerimento:</span> Salva le credenziali in un posto sicuro per accessi futuri
+              </p>
             </Card>
           </div>
         </div>
