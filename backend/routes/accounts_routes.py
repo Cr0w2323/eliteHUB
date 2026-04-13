@@ -27,3 +27,17 @@ async def get_accounts():
             account['_id'] = str(account['_id'])
     
     return accounts
+
+@router.get("/accounts/{account_id}")
+async def get_account(account_id: str):
+    """Get single Fortnite account by ID"""
+    account = await db.fortnite_accounts.find_one({"id": account_id})
+    
+    if not account:
+        return None
+    
+    # Convert MongoDB _id to string
+    if '_id' in account:
+        account['_id'] = str(account['_id'])
+    
+    return account

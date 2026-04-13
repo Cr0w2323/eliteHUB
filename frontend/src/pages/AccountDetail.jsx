@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { fortniteAccounts } from '../mock/accountsData';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -20,19 +19,68 @@ import {
   Clock,
   Zap,
 } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'sonner';
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 const AccountDetail = () => {
   const { id } = useParams();
-  const account = fortniteAccounts.find((acc) => acc.id === id);
+  const navigate = useNavigate();
+  const [account, setAccount] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchAccount = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/accounts/${id}`);
+        if (response.data) {
+          setAccount(response.data);
+        }
+      } catch (error) {
+        console.error('Error loading account:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAccount();
+  }, [id]);
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      toast.error('Effettua il login per aggiungere al carrello');
+      navigate('/login');
+      return;
+    }
+
+    const result = await addToCart(account);
+    if (result.success) {
+      toast.success('Aggiunto al carrello!');
+    } else {
+      toast.error(result.error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white text-xl">Caricamento...</div>
+      </div>
+    );
+  }
 
   if (!account) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-4">Account non trovato</h2>
           <Link to="/">
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
               Torna alla Home
             </Button>
           </Link>
@@ -109,10 +157,8 @@ const AccountDetail = () => {
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">{account.title}</h1>
               <div className="flex items-baseline gap-4">
                 <span className="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                  €0.00
+                  €{account.price.toFixed(2)}
                 </span>
-                <span className="text-gray-500 line-through text-2xl">€{account.price.toFixed(2)}</span>
-                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Demo</Badge>
               </div>
             </div>
 
@@ -215,11 +261,12 @@ const AccountDetail = () => {
             {/* Action Buttons */}
             <div className="space-y-3 pt-4">
               <Button
+                onClick={handleAddToCart}
                 size="lg"
                 className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white h-14 text-lg font-semibold shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300"
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
-                Aggiungi al Carrello - €0.00
+                Aggiungi al Carrello - €{account.price.toFixed(2)}
               </Button>
               <div className="grid grid-cols-2 gap-3">
                 <Button
