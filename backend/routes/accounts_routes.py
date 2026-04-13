@@ -19,9 +19,9 @@ db = client[os.environ['DB_NAME']]
 @router.get("/accounts")
 async def get_accounts():
     """Get all Fortnite accounts (credentials hidden until purchase, excludes sold accounts)"""
-    # Escludi account già venduti (mostra solo is_sold=False o campo mancante)
+    # Mostra solo account NON venduti
     accounts = await db.fortnite_accounts.find(
-        {"$or": [{"is_sold": False}, {"is_sold": {"$exists": False}}]},
+        {"is_sold": False},
         {"_id": 0}
     ).to_list(1000)
     
