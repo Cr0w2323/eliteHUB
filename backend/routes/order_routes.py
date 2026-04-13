@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 from typing import List
-import random
-import string
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent.parent
@@ -19,37 +17,38 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-def generate_account_credentials():
-    """Genera email e password per l'account Fortnite acquistato"""
-    # Genera email random per l'account Fortnite
-    random_chars = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-    email = f"fortnite_{random_chars}@elitehub.com"
-    
-    # Genera password sicura
-    password = ''.join(random.choices(string.ascii_letters + string.digits + "!@#$%", k=16))
-    
-    return email, password
-
 @router.post("/create", response_model=Order)
 async def create_order(order_data: OrderCreate, current_user: User = Depends(get_current_user)):
-    # Crea gli account Fortnite acquistati con credenziali
+    # Crea gli account Fortnite acquistati con credenziali REALI dal database
     purchased_accounts = []
     
     for item in order_data.items:
-        email, password = generate_account_credentials()
+        # Recupera l'account REALE dal database con le credenziali
+        account = await db.fortnite_accounts.find_one(
+            {"id": item.account_id},
+            {"_id": 0}
+        )
         
-        # Recupera i dettagli dell'account dal database mock
-        # In produzione, questi dati verrebbero da un database reale
+        if not account:
+            raise HTTPException(status_code=404, detail=f"Account {item.account_id} not found")
+        
+        # Usa le credenziali REALI dal database
         purchased_account = PurchasedAccount(
             account_id=item.account_id,
             title=item.title,
             image=item.image,
-            skins_count=random.randint(50, 500),  # Questi dati dovrebbero venire dal DB
-            vbucks=random.randint(500, 3000),
-            account_email=email,
-            account_password=password
+            skins_count=0,  # Info disponibile nel titolo
+            vbucks=0,  # Info disponibile nel titolo
+            account_email=account.get('account_email', 'N/A'),
+            account_password=account.get('account_password', 'N/A')
         )
         purchased_accounts.append(purchased_account)
+        
+        # IMPORTANTE: Marca l'account come venduto per evitare vendite doppie
+        await db.fortnite_accounts.update_one(
+            {"id": item.account_id},
+            {"$set": {"is_sold": True}}
+        )
     
     # Crea l'ordine
     order = Order(

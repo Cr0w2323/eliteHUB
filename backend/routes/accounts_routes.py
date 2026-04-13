@@ -18,26 +18,31 @@ db = client[os.environ['DB_NAME']]
 
 @router.get("/accounts")
 async def get_accounts():
-    """Get all Fortnite accounts"""
-    accounts = await db.fortnite_accounts.find({}).to_list(1000)
+    """Get all Fortnite accounts (credentials hidden until purchase, excludes sold accounts)"""
+    # Escludi account già venduti (mostra solo is_sold=False o campo mancante)
+    accounts = await db.fortnite_accounts.find(
+        {"$or": [{"is_sold": False}, {"is_sold": {"$exists": False}}]},
+        {"_id": 0}
+    ).to_list(1000)
     
-    # Convert MongoDB _id to string and return
+    # SECURITY: Hide credentials from public listing
     for account in accounts:
-        if '_id' in account:
-            account['_id'] = str(account['_id'])
+        # Remove sensitive fields before returning
+        account.pop('account_email', None)
+        account.pop('account_password', None)
     
     return accounts
 
 @router.get("/accounts/{account_id}")
 async def get_account(account_id: str):
-    """Get single Fortnite account by ID"""
-    account = await db.fortnite_accounts.find_one({"id": account_id})
+    """Get single Fortnite account by ID (credentials hidden until purchase)"""
+    account = await db.fortnite_accounts.find_one({"id": account_id}, {"_id": 0})
     
     if not account:
         return None
     
-    # Convert MongoDB _id to string
-    if '_id' in account:
-        account['_id'] = str(account['_id'])
+    # SECURITY: Hide credentials from detail view
+    account.pop('account_email', None)
+    account.pop('account_password', None)
     
     return account
