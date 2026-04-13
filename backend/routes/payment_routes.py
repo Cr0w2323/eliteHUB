@@ -6,8 +6,9 @@ import os
 router = APIRouter(prefix="/api/payments", tags=["payments"])
 
 # Configurazione PayPal
-PAYPAL_EMAIL = "poz000@gmail.com"
+PAYPAL_EMAIL = os.getenv("PAYPAL_EMAIL", "poz000@gmail.com")
 PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID", "test")
+PAYPAL_MODE = os.getenv("PAYPAL_MODE", "sandbox")
 
 # Per Stripe, in modalità test
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "pk_test_demo")
